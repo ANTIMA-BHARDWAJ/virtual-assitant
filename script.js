@@ -41,12 +41,12 @@ recognition.onResult=(event)=>{
 
 btn.addEventListener("click",()=>{
     recognition.start();
-    btn.Style.display="none";
-    voice.Style.display="block";
+    btn.style.display="none";
+    voice.style.display="block";
 });
 function takeCommand(message){
- btn.Style.display="flex";
- voice.Style.display="none";
+ btn.style.display="flex";
+ voice.style.display="none";
     if (message.includes("hello")||message.includes("hey")){
         speak("hello sir,what i can help you?");
     }
