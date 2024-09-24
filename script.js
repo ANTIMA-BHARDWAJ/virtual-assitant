@@ -1,69 +1,90 @@
-let btn =  document.querySelector("#btn");
-let content =document.querySelector("#content");
+let btn = document.querySelector("#btn");
+let content = document.querySelector("#content");
 let voice = document.querySelector("#voice");
+let stopBtn = document.getElementById("stopBtn"); 
+let recognizedText = document.querySelector("#recognizedText"); 
+let transcriptDisplay = document.querySelector("#transcriptDisplay"); 
 
-function speak(text){
-    let text_speak= new SpeechSynthesisUtterance(text);
-    text_speak.rate=1;
-    text_speak.pitch=1;
-    text_speak.volume=1;
-    text_speak.lang="hi-GB";
+let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = new SpeechRecognition();
+recognition.interimResults = true;  // Set to true for real-time display
+recognition.maxAlternatives = 1;
+
+function speak(text) {
+    let text_speak = new SpeechSynthesisUtterance(text);
+    text_speak.rate = 1;
+    text_speak.pitch = 1;
+    text_speak.volume = 1;
+    text_speak.lang = "hi-GB";
     window.speechSynthesis.speak(text_speak);
+
+    stopBtn.style.display = "block";
+    text_speak.onend = () => {
+        stopBtn.style.display = "none";
+    };
 }
 
+stopBtn.addEventListener("click", () => {
+    window.speechSynthesis.cancel();
+    recognition.stop();  // Stop voice recognition
+    stopBtn.style.display = "none";
+});
 
-function wishMe(){
-    let day=new Date();
-    let hours=day.getHours();
-    if(hours>=0 && hours<12){
+function wishMe() {
+    let day = new Date();
+    let hours = day.getHours();
+    if (hours >= 0 && hours < 12) {
         speak("Good Morning Sir");
-    }
-    else if(hours>=12 && hours<16){
+    } else if (hours >= 12 && hours < 16) {
         speak("Good afternoon sir");
-    }
-    else{
+    } else {
         speak("Good Evening Sir");
     }
 }
-window.addEventListener('load',()=>{
- wishMe();
+
+window.addEventListener('load', () => {
+    wishMe();
 });
-let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-let recognition = new SpeechRecognition();
 
+// Handle result from Speech Recognition
+recognition.onresult = (event) => {
+    let currentIndex = event.resultIndex;
+    let transcript = event.results[currentIndex][0].transcript;
+    transcriptDisplay.innerText = transcript;  // Display recognized text in real time
 
-recognition.onResult=(event)=>{
-    let currentIndex =event.resultIndex;
-    let transcript=results[currentIndex][0].transcript;
-    content.innerText=transcript;
-    takeCommand(transcript.toLowerCase());
+    if (event.results[currentIndex].isFinal) {
+        takeCommand(transcript.toLowerCase());
+    }
 };
 
-btn.addEventListener("click",()=>{
+// Start recognition when button is clicked
+btn.addEventListener("click", () => {
     recognition.start();
-    btn.style.display="none";
-    voice.style.display="block";
+    btn.style.display = "none";
+    voice.style.display = "block";
 });
-function takeCommand(message){
- btn.style.display="flex";
- voice.style.display="none";
-    if (message.includes("hello")||message.includes("hey")){
-        speak("hello sir,what i can help you?");
-    }
-    else if(message.includes("who are you")){
-        speak("i am virtual assistant ,created by,Antima")
-    }else if(message.includes("open youtube")){
-        speak("opening youtube...")
-        Window.open("https://www.youtube.com/")
-    }else if(message.includes("open GOOGLE")){
-        speak("opening google...")
-        Window.open("https://www.google.com/")
-    }else if(message.includes("open facebook")){
-        speak("opening facebook...")
-        Window.open("https://www.facebook.com/")
-    }else{
-       "this is  what i found on internet regarding"+ message.replace("shifra","")||message.replace("shipra","")
-        speak('finalText')
-        window.open('https://www.google.com/search?q=${message.replace("shifra","")}',"_blank")
+
+function takeCommand(message) {
+    // Show mic button and hide voice gif after command is processed
+    btn.style.display = "flex";
+    voice.style.display = "none";
+    
+    if (message.includes("hello") || message.includes("hey")) {
+        speak("Hello sir, what can I help you with?");
+    } else if (message.includes("who are you")) {
+        speak("I am a virtual assistant, created by Antima.");
+    } else if (message.includes("open youtube")) {
+        speak("Opening YouTube...");
+        window.open("https://www.youtube.com/");
+    } else if (message.includes("open google")) {
+        speak("Opening Google...");
+        window.open("https://www.google.com/");
+    } else if (message.includes("open facebook")) {
+        speak("Opening Facebook...");
+        window.open("https://www.facebook.com/");
+    } else {
+        let finalText = "This is what I found on the internet regarding " + message;
+        speak(finalText);
+        window.open(`https://www.google.com/search?q=${message}`, "_blank");
     }
 }
