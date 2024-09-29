@@ -21,6 +21,7 @@ body {
 
 h1 {
     color: aliceblue;
+    text-align: center;
 }
 
 #name {
@@ -41,7 +42,7 @@ h1 {
 #btn {
     width: 30%;
     background: linear-gradient(to right, red, blue);
-    padding: 2px;
+    padding: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -49,15 +50,13 @@ h1 {
     font-size: 15px;
     border-radius: 10px;
     color: white;
-    box-shadow: 2px 2px 10p x(red, blue) 2px 2px 10px(red, blue);
     border: none;
     transition: all 0.5s;
     cursor: pointer;
 }
 
 #btn:hover {
-    box-shadow: 2px 2px 10p x(red, blue) 2px 2px 10px(red, blue);
-    letter-spacing: 2px;
+    transform: scale(1.05);
 }
 
 #stopBtn {
@@ -72,9 +71,14 @@ h1 {
     font-size: 15px;
     border-radius: 10px;
     color: white;
-    box-shadow: 2px 2px 10p x(red, blue) 2px 2px 10px(red, blue);
     border: none;
     transition: all 0.5s;
     cursor: pointer;
     display: none;
+}
+
+#transcriptDisplay {
+    color: white;
+    font-size: 20px;
+    margin-top: 20px;
 }
